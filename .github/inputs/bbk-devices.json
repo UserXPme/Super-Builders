@@ -1,4 +1,23 @@
 {
+  "oneplus_15_b": {
+    "brand": "oneplus",
+    "name": "OnePlus 15",
+    "soc": "sm8850",
+    "codename": "canoe",
+    "android_version": "android16",
+    "kernel_version": "6.12",
+    "build_method": "perf",
+    "manifest_repo": "WildKernels/OnePlus_KernelSU_SUSFS",
+    "manifest_branch": "zeromount",
+    "hmbird": true,
+    "extra_artifacts": [
+      "dtbo.img",
+      "system_dlkm.img",
+      "vendor_dlkm.img",
+      "vendor_boot.img"
+    ],
+    "manifest_file": "manifests/oos16/oneplus_15_w.xml"
+  },
   "oneplus_13_b": {
     "brand": "oneplus",
     "name": "OnePlus 13",
