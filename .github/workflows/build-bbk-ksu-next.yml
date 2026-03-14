@@ -275,7 +275,7 @@ jobs:
 
     - name: Clone AnyKernel3
       run: |
-        git clone --depth=1 https://github.com/osm0sis/AnyKernel3.git "$GITHUB_WORKSPACE/AnyKernel3"
+        git clone --depth=1 -b gki-2.0 https://github.com/WildKernels/AnyKernel3.git "$GITHUB_WORKSPACE/AnyKernel3"
 
     - name: Setup KernelSU-Next
       working-directory: ${{ env.KERNEL_COMMON }}
