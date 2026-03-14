@@ -76,7 +76,14 @@ on:
         default: ""
 
 jobs:
+  download-dependencies:
+    uses: ./.github/workflows/cache-dependencies.yml
+    permissions:
+      contents: read
+      actions: write
+
   build:
+    needs: [download-dependencies]
     name: "Samsung WKSU — ${{ inputs.device }}"
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -245,9 +252,11 @@ jobs:
 
         echo "Kernel: ${KERNEL_VER}.${SUBLEVEL}"
 
-    - name: Clone AnyKernel3
-      run: |
-        git clone --depth=1 -b gki-2.0 https://github.com/WildKernels/AnyKernel3.git "$GITHUB_WORKSPACE/AnyKernel3"
+    - name: Download AnyKernel3
+      uses: actions/download-artifact@v4
+      with:
+        name: anykernel3
+        path: AnyKernel3
 
     - name: Setup WKSU
       working-directory: ${{ env.KERNEL_COMMON }}
@@ -318,6 +327,13 @@ jobs:
           bash "$FIX" . "$SUBLEVEL" "$ANDROID_VER" "$KERNEL_VER" ""
         fi
 
+    - name: Download Kernel Patches
+      if: inputs.add_ptrace_fix || inputs.add_perf_patches
+      uses: actions/download-artifact@v4
+      with:
+        name: kernel-patches
+        path: kernel_patches
+
     - name: Apply Kernel Patches
       if: inputs.add_ptrace_fix || inputs.add_perf_patches
       working-directory: ${{ env.KERNEL_COMMON }}
@@ -325,7 +341,6 @@ jobs:
         ADD_PTRACE: ${{ inputs.add_ptrace_fix }}
         ADD_PERF: ${{ inputs.add_perf_patches }}
       run: |
-        git clone --depth=1 https://github.com/WildKernels/kernel_patches.git "$GITHUB_WORKSPACE/kernel_patches"
         bash "$GITHUB_WORKSPACE/android12-5.10/build-helpers/apply-kernel-patches.sh" . "$KERNEL_VER" "$GITHUB_WORKSPACE/kernel_patches"
 
     - name: Assemble Defconfig
